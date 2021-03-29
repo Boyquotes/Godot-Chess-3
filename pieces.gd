@@ -24,27 +24,27 @@ func get_piece(num):
 			return null
 		9: #wP
 			return 0
-		10:
+		10: #wN
 			return 1
-		11:
+		11: #wB
 			return 2
-		12:
+		12: #wR
 			return 3
-		13:
+		13: #wQ
 			return 4
-		14:
+		14: #wK
 			return 5
-		17:
+		17: #bP
 			return 6
-		18:
+		18: #bN
 			return 7
-		19:
+		19: #bB
 			return 8
-		20:
+		20: #bR
 			return 9
-		21: 
+		21: #bQ
 			return 10
-		22:
+		22: #bK
 			return 11
 		_:
 			return null
