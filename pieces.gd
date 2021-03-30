@@ -3,14 +3,15 @@ extends TileMap
 #iterate through the board array, and if there's a piece there, display it. otherwise display nothing
 func draw_pieces(board_array):
 	for i in range(21, 99):
-		var piece_coords = index_to_coords(i)
-		if (board_array[i] != null): #if the square isn't empty
-			var piece_tile = get_piece(board_array[i])
-			#var debug_string = "Placing piece from index %s at coords %s, %s"
-			#print(debug_string % [i, piece_coords.x, piece_coords.y])
-			self.set_cellv(piece_coords, piece_tile)
-		else:
-			self.set_cellv(piece_coords, -1)
+		if !(i % 10 == 0 || i % 10 == 9):
+			var piece_coords = index_to_coords(i)
+			if (board_array[i] != null): #if the square isn't empty
+				var piece_tile = get_piece(board_array[i])
+				#var debug_string = "Placing piece from index %s at coords %s, %s"
+				#print(debug_string % [i, piece_coords.x, piece_coords.y])
+				self.set_cellv(piece_coords, piece_tile)
+			else:
+				self.set_cellv(piece_coords, -1)
 		
 		
 #get the appropriate tile number from the board[num] value

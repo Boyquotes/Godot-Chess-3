@@ -1,5 +1,9 @@
 extends Node2D
 
+#"include" section
+onready var moveGen = preload("moveGen.gd").new()
+
+
 onready var board_tilemap = get_node("board")
 onready var pieces_tilemap = get_node("pieces")
 onready var cursor_sprite = get_node("cursorSprite")
@@ -50,34 +54,23 @@ func _input(event):
 func select_piece(square, piece, index):
 	selected_square = square #important later for removing the highlight effect
 	moving = true
-	cursor_sprite.setCursor(piece) #set the cursor sprite to the piece we're moving, and make it visible
-	cursor_sprite.visible = true
+	#if piece == 21 || piece == 13 || piece == 20 || piece == 12 || piece == 19 || piece == 11 || piece == 18 || piece == 10 || piece == 14 || piece == 22:
+	legal_moves = generate_legal_moves(piece, index)
+	highlight_legal_moves()
 	moving_piece = board[index] #also important later, for putting the piece back down
 	board[index] = null #remove the piece from the board
+	cursor_sprite.setCursor(piece) #set the cursor sprite to the piece we're moving, and make it visible
+	cursor_sprite.visible = true
 	pieces_tilemap.draw_pieces(board)
-	var board_clicked_tile_id = board_tilemap.get_cellv(square)
-	board_clicked_tile_id -= current_theme #get the non-offset version of this tile's theme
-	match board_clicked_tile_id:
-		0: #light
-			board_tilemap.set_cellv(square, board_tilemap.LIGHT_TILE_H)
-		1: #dark
-			board_tilemap.set_cellv(square, board_tilemap.DARK_TILE_H)
 			
 func place_piece(piece, index):
 	if board[index] == null or current_turn != get_piece_color(index): #if the target square is empty, or the opponent's piece
 		moving = false
 		cursor_sprite.visible = false
-		#deselect highlighted square
-		var board_selected_tile_id = board_tilemap.get_cellv(selected_square)
-		board_selected_tile_id -= current_theme #get the non-offset version of this tile's theme
-		match board_selected_tile_id:
-			2: #light
-				board_tilemap.set_cellv(selected_square, board_tilemap.LIGHT_TILE)
-			3: #dark
-				board_tilemap.set_cellv(selected_square, board_tilemap.DARK_TILE)
+		remove_highlight_legal_moves()
 		board[index] = piece
 		pieces_tilemap.draw_pieces(board)
-		if (!(coords_to_index(selected_square) == index)): #if the player didnt put the piece back where it started
+		if (!(coords_to_index(selected_square) == index)): #if the player didn't put the piece back where it started
 			if current_turn == 0:#cycle the turns. no ternary operator in gdscript makes me sad
 				current_turn = 1
 			else:
@@ -94,8 +87,8 @@ func get_piece_color(index):
 
 #helper function takes index in board[] and returns a Vector2 of its coordinates on the tilemaps
 func index_to_coords(index):
-	var current_file = (index % 10) - 1
-	var current_rank = ((index - current_file)/10) - 2
+	var current_file = (int(index) % 10) - 1
+	var current_rank = (int(index - current_file)/10) - 2
 	return Vector2(current_file, current_rank)
 
 #helper function takes a Vector2 of tilemap coordinates and returns the corresponding index in board[]
@@ -111,8 +104,61 @@ func init_board_array():
 	#these for loops are clunky, but easy to understand and only run once
 	for i in 120:
 		board[i] = -1
-	for j in range(21,99): #if the top-left square is 0, then the playable 8x8 board is squares 21-98 
-		board[j] = null
+	for j in range(21,99): #if the top-left square is 0, then the playable 8x8 board is squares 21-98
+		if !(j % 10 == 0 || j % 10 == 9): #except for the outer rows
+			board[j] = null
+	
+
+func generate_legal_moves(piece, index):
+	match piece:
+		9: #pawn
+			return moveGen.generate_pawn_moves(board, index)
+		17: #pawn
+			return moveGen.generate_pawn_moves(board, index)
+		10: #knight
+			return moveGen.generate_knight_moves(board, index)
+		18: #knight
+			return moveGen.generate_knight_moves(board, index)
+		11: #bishop
+			return moveGen.generate_bishop_moves(board, index)
+		19: #bishop
+			return moveGen.generate_bishop_moves(board, index)
+		12: #rook
+			return moveGen.generate_rook_moves(board, index)
+		20: #rook
+			return moveGen.generate_rook_moves(board, index)
+		13: #queen
+			return moveGen.generate_queen_moves(board, index)
+		21: #queen			
+			return moveGen.generate_queen_moves(board, index)
+		14: #king
+			return moveGen.generate_king_moves(board, index)
+		22: #king
+			return moveGen.generate_king_moves(board, index)
+
+func highlight_legal_moves():
+	if (legal_moves != null):
+		for move in legal_moves:
+			var square = index_to_coords(move)
+			var board_clicked_tile_id = board_tilemap.get_cellv(square)
+			board_clicked_tile_id -= current_theme #get the non-offset version of this tile's theme
+			match board_clicked_tile_id:
+				0: #light
+					board_tilemap.set_cellv(square, board_tilemap.LIGHT_TILE_H)
+				1: #dark
+					board_tilemap.set_cellv(square, board_tilemap.DARK_TILE_H)
+
+func remove_highlight_legal_moves():
+	if (legal_moves != null):
+		for move in legal_moves:
+			var square = index_to_coords(move)
+			var board_clicked_tile_id = board_tilemap.get_cellv(square)
+			board_clicked_tile_id -= current_theme #get the non-offset version of this tile's theme
+			match board_clicked_tile_id:
+				2: #light
+					board_tilemap.set_cellv(square, board_tilemap.LIGHT_TILE)
+				3: #dark
+					board_tilemap.set_cellv(square, board_tilemap.DARK_TILE)
 	
 
 func setup_pieces():
