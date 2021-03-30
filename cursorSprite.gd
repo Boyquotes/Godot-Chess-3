@@ -1,19 +1,17 @@
 extends AnimatedSprite
 
 
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	self.visible = false
 	self.set_frame(0)
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	position = get_global_mouse_position()
 	
 
+#take the value from board[index], and match it to the frame that represents that piece
 func setCursor(x):
 	match x:
 		0:

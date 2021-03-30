@@ -9,21 +9,24 @@ onready var cursor_sprite = get_node("cursorSprite")
 enum board_theme {BW = 0, TAN = 4}
 var current_theme
 
+#idea borrowed from Sebastian Lague on YouTube: https://youtu.be/U4ogK0MIzqk
+#pieces are represented in such a way that if examined in binary, first two digits indicate color
+#and last 3 indicate piece type. e.g. white pawn = 9 = 01001, black rook = 20 = 10100
 enum piece_type {None, Pawn, Knight, Bishop, Rook, Queen, King}
 enum piece_color {White = 8, Black = 16}
 
-var moving = false
-var selected_square
-var moving_piece
+var moving = false #is a piece currently being "held"?
+var selected_square #currently highilighted square
+var moving_piece #type of piece currently being moved
 
 var current_turn #0 = white, 1 = black
 
 
-var board = Array()
+var board = Array() #master representation of the board. array of ints, size=64
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	current_theme = board_theme.TAN
+	current_theme = board_theme.TAN #this will be a user option eventually
 	board_tilemap.setup_theme(current_theme)
 	board_tilemap.draw_board()
 	board.resize(64)
@@ -34,20 +37,22 @@ func _ready():
 func _input(event):
 	if event.is_action_released("mouse_left"):
 		var mouse_pos = get_global_mouse_position()
-		var clicked_tile_pos = board_tilemap.world_to_map(mouse_pos)
-		var clicked_tile_index = (clicked_tile_pos.y  * 8) + clicked_tile_pos.x
+		var clicked_tile_pos = board_tilemap.world_to_map(mouse_pos) #grab the tile in the tilemap
+		var clicked_tile_index = (clicked_tile_pos.y  * 8) + clicked_tile_pos.x #calculate the corresponding index in board[]
+		#if there's a piece in the square we clicked, we aren't already moving one, and the piece belongs to the current player
 		if board[clicked_tile_index] != null and !moving and get_piece_color(clicked_tile_index) == current_turn:
 			select_piece(clicked_tile_pos, board[clicked_tile_index], clicked_tile_index)
+		#if we're moving a piece, we can try and place it on the new square
 		elif moving:
 			place_piece(clicked_tile_pos, moving_piece, clicked_tile_index)
 		
 func select_piece(square, piece, index):
-	selected_square = square
+	selected_square = square #important later for removing the highlight effect
 	moving = true
-	cursor_sprite.setCursor(piece)
+	cursor_sprite.setCursor(piece) #set the cursor sprite to the piece we're moving, and make it visible
 	cursor_sprite.visible = true
-	moving_piece = board[index]
-	board[index] = null
+	moving_piece = board[index] #also important later, for putting the piece back down
+	board[index] = null #remove the piece from the board
 	pieces_tilemap.draw_pieces(board)
 	var board_clicked_tile_id = board_tilemap.get_cellv(square)
 	board_clicked_tile_id -= current_theme #get the non-offset version of this tile's theme
@@ -77,6 +82,7 @@ func place_piece(square, piece, index):
 		else:
 			current_turn = 0
 
+#find the color of the piece in board[] at a given index
 func get_piece_color(index):
 	if (board[index] == null):
 		return null

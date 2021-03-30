@@ -1,11 +1,6 @@
 extends TileMap
 
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
+#iterate through the board array, and if there's a piece there, display it. otherwise display nothing
 func draw_pieces(board_array):
 	for i in board_array.size():
 		var current_file = i % 8
@@ -17,9 +12,7 @@ func draw_pieces(board_array):
 			self.set_cell(current_file, current_rank, -1)
 		
 		
-	
-	
-
+#get the appropriate tile number from the board[num] value
 func get_piece(num):
 	match num:
 		0:
