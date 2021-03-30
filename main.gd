@@ -38,13 +38,13 @@ func _input(event):
 	if event.is_action_released("mouse_left"):
 		var mouse_pos = get_global_mouse_position()
 		var clicked_tile_pos = board_tilemap.world_to_map(mouse_pos) #grab the tile in the tilemap
-		var clicked_tile_index = (clicked_tile_pos.y  * 8) + clicked_tile_pos.x #calculate the corresponding index in board[]
+		var clicked_tile_index = coords_to_index(clicked_tile_pos) #calculate the corresponding index in board[]
 		#if there's a piece in the square we clicked, we aren't already moving one, and the piece belongs to the current player
 		if board[clicked_tile_index] != null and !moving and get_piece_color(clicked_tile_index) == current_turn:
 			select_piece(clicked_tile_pos, board[clicked_tile_index], clicked_tile_index)
 		#if we're moving a piece, we can try and place it on the new square
 		elif moving:
-			place_piece(clicked_tile_pos, moving_piece, clicked_tile_index)
+			place_piece(moving_piece, clicked_tile_index)
 		
 func select_piece(square, piece, index):
 	selected_square = square #important later for removing the highlight effect
@@ -62,7 +62,7 @@ func select_piece(square, piece, index):
 		1: #dark
 			board_tilemap.set_cellv(square, board_tilemap.DARK_TILE_H)
 			
-func place_piece(square, piece, index):
+func place_piece(piece, index):
 	if board[index] == null or current_turn != get_piece_color(index): #if the target square is empty, or the opponent's piece
 		moving = false
 		cursor_sprite.visible = false
@@ -91,6 +91,16 @@ func get_piece_color(index):
 	else: #black
 		return 1
 
+#helper function takes index in board[] and returns a Vector2 of its coordinates on the tilemaps
+func index_to_coords(index):
+	var current_file = index % 8
+	var current_rank = (index - current_file) / 8
+	return Vector2(current_file, current_rank)
+
+#helper function takes a Vector2 of tilemap coordinates and returns the corresponding index in board[]
+func coords_to_index(coords):
+	return (coords.y  * 8) + coords.x
+	
 func setup_pieces():
 	#this feels clunky but I can't think of a better way to do it at the moment
 	#black pieces
