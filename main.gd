@@ -64,7 +64,7 @@ func select_piece(square, piece, index):
 	pieces_tilemap.draw_pieces(board)
 			
 func place_piece(piece, index):
-	if board[index] == null or current_turn != get_piece_color(index): #if the target square is empty, or the opponent's piece
+	if legal_moves.has(index): #if the destination is within the legal moves
 		moving = false
 		cursor_sprite.visible = false
 		remove_highlight_legal_moves()
@@ -159,7 +159,6 @@ func remove_highlight_legal_moves():
 					board_tilemap.set_cellv(square, board_tilemap.LIGHT_TILE)
 				3: #dark
 					board_tilemap.set_cellv(square, board_tilemap.DARK_TILE)
-	
 
 func setup_pieces():
 	#this feels clunky but I can't think of a better way to do it at the moment

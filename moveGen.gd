@@ -11,13 +11,14 @@ enum wp_capture_offsets{a = -9, b = -11}
 enum bp_capture_offsets{a = 9, b = 11}
 
 func generate_queen_moves(board, index):
-	print ("Generating queen moves!")
+	#print ("Generating queen moves!")
 	var final_moves = Array()
 	var next_pos
 	var color = get_piece_color(board, index)
 	final_moves.append(index)
 	for dir in q_slide_offsets:
 		next_pos = index + q_slide_offsets[dir]
+		#as long as we don't run into an unreachable square, or an allied piece
 		while board[next_pos] != -1 and color != get_piece_color(board, next_pos):
 			final_moves.append(next_pos)
 			#if we've found a capture, we can stop looking for more moves in this direction
@@ -27,13 +28,14 @@ func generate_queen_moves(board, index):
 	return final_moves
 
 func generate_rook_moves(board, index):
-	print ("Generating rook moves!")
+	#print ("Generating rook moves!")
 	var final_moves = Array()
 	var next_pos
 	var color = get_piece_color(board, index)
 	final_moves.append(index)
 	for dir in r_slide_offsets:
 		next_pos = index + r_slide_offsets[dir]
+		#as long as we don't run into an unreachable square, or an allied piece
 		while board[next_pos] != -1 and color != get_piece_color(board, next_pos):
 			final_moves.append(next_pos)
 			#if we've found a capture, we can stop looking for more moves in this direction
@@ -43,13 +45,14 @@ func generate_rook_moves(board, index):
 	return final_moves
 
 func generate_bishop_moves(board, index):
-	print ("Generating bishop moves!")
+	#print ("Generating bishop moves!")
 	var final_moves = Array()
 	var next_pos
 	var color = get_piece_color(board, index)
 	final_moves.append(index)
 	for dir in b_slide_offsets:
 		next_pos = index + b_slide_offsets[dir]
+		#as long as we don't run into an unreachable square, or an allied piece
 		while board[next_pos] != -1 and color != get_piece_color(board, next_pos):
 			final_moves.append(next_pos)
 			#if we've found a capture, we can stop looking for more moves in this direction
@@ -59,31 +62,35 @@ func generate_bishop_moves(board, index):
 	return final_moves
 
 func generate_knight_moves(board, index):
-	print ("Generating knight moves!")
+	#print ("Generating knight moves!")
 	var final_moves = Array()
 	var next_pos
 	var color = get_piece_color(board, index)
 	final_moves.append(index)
 	for dir in n_jump_offsets:
 		next_pos = index + n_jump_offsets[dir]
+		#as long as we don't run into an unreachable square, or an allied piece
 		if board[next_pos] != -1 and color != get_piece_color(board, next_pos):
 			final_moves.append(next_pos)
 	return final_moves
 
 func generate_king_moves(board, index):
-	print ("Generating king moves!")
+	#print ("Generating king moves!")
 	var final_moves = Array()
 	var next_pos
 	var color = get_piece_color(board, index)
 	final_moves.append(index)
 	for dir in q_slide_offsets:
 		next_pos = index + q_slide_offsets[dir]
+		#as long as we don't run into an unreachable square, or an allied piece
+		#basic king moves are calculated identically to the queen, except we use an if instead of a while
 		if board[next_pos] != -1 and color != get_piece_color(board, next_pos):
 			final_moves.append(next_pos)
 	return final_moves
 
+#the logic for pawns is a little ugly, it may have to be changed to allow for enpassant and stuff
 func generate_pawn_moves(board, index):
-	print ("Generating pawn moves!")
+	#print ("Generating pawn moves!")
 	var final_moves = Array()
 	var next_pos
 	var color = get_piece_color(board, index)
