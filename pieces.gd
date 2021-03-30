@@ -2,14 +2,15 @@ extends TileMap
 
 #iterate through the board array, and if there's a piece there, display it. otherwise display nothing
 func draw_pieces(board_array):
-	for i in board_array.size():
-		var current_file = i % 8
-		var current_rank = (i - current_file) / 8
-		var piece_tile = get_piece(board_array[i])
-		if(piece_tile != null):
-			self.set_cell(current_file, current_rank, piece_tile)
+	for i in range(21, 99):
+		var piece_coords = index_to_coords(i)
+		if (board_array[i] != null): #if the square isn't empty
+			var piece_tile = get_piece(board_array[i])
+			#var debug_string = "Placing piece from index %s at coords %s, %s"
+			#print(debug_string % [i, piece_coords.x, piece_coords.y])
+			self.set_cellv(piece_coords, piece_tile)
 		else:
-			self.set_cell(current_file, current_rank, -1)
+			self.set_cellv(piece_coords, -1)
 		
 		
 #get the appropriate tile number from the board[num] value
@@ -43,3 +44,10 @@ func get_piece(num):
 			return 11
 		_:
 			return null
+
+#helper function takes index in board[] and returns a Vector2 of its coordinates on the tilemaps
+func index_to_coords(index):
+	var current_file = (index % 10) - 1
+	var current_rank = ((index - current_file)/10) - 2
+	return Vector2(current_file, current_rank)
+

@@ -29,7 +29,7 @@ func _ready():
 	current_theme = board_theme.TAN #this will be a user option eventually
 	board_tilemap.setup_theme(current_theme)
 	board_tilemap.draw_board()
-	board.resize(64)
+	init_board_array()
 	setup_pieces()
 	pieces_tilemap.draw_pieces(board)
 	current_turn = 0
@@ -93,35 +93,48 @@ func get_piece_color(index):
 
 #helper function takes index in board[] and returns a Vector2 of its coordinates on the tilemaps
 func index_to_coords(index):
-	var current_file = index % 8
-	var current_rank = (index - current_file) / 8
+	var current_file = (index % 10) - 1
+	var current_rank = ((index - current_file)/10) - 2
 	return Vector2(current_file, current_rank)
 
 #helper function takes a Vector2 of tilemap coordinates and returns the corresponding index in board[]
 func coords_to_index(coords):
-	return (coords.y  * 8) + coords.x
+	var ten_digit = (coords.y + 2)
+	var one_digit = coords.x + 1
+	return (ten_digit * 10) + one_digit
 	
+#board uses 10x12 representation as detailed here: https://www.chessprogramming.org/10x12_Board
+#this function sets the off-limits squares to -1, and the playable squares to null
+func init_board_array():
+	board.resize(120)
+	#these for loops are clunky, but easy to understand and only run once
+	for i in 120:
+		board[i] = -1
+	for j in range(21,99): #if the top-left square is 0, then the playable 8x8 board is squares 21-98 
+		board[j] = null
+	
+
 func setup_pieces():
 	#this feels clunky but I can't think of a better way to do it at the moment
 	#black pieces
-	board[0] = piece_type.Rook | piece_color.Black
-	board[1] = piece_type.Knight | piece_color.Black
-	board[2] = piece_type.Bishop | piece_color.Black
-	board[3] = piece_type.Queen | piece_color.Black
-	board[4] = piece_type.King | piece_color.Black
-	board[5] = piece_type.Bishop | piece_color.Black
-	board[6] = piece_type.Knight | piece_color.Black
-	board[7] = piece_type.Rook | piece_color.Black
-	for i in range (8,16):
+	board[21] = piece_type.Rook | piece_color.Black
+	board[22] = piece_type.Knight | piece_color.Black
+	board[23] = piece_type.Bishop | piece_color.Black
+	board[24] = piece_type.Queen | piece_color.Black
+	board[25] = piece_type.King | piece_color.Black
+	board[26] = piece_type.Bishop | piece_color.Black
+	board[27] = piece_type.Knight | piece_color.Black
+	board[28] = piece_type.Rook | piece_color.Black
+	for i in range (31,39):
 		board[i] = piece_type.Pawn | piece_color.Black
 	#white pieces
-	board[56] = piece_type.Rook | piece_color.White
-	board[57] = piece_type.Knight | piece_color.White
-	board[58] = piece_type.Bishop | piece_color.White
-	board[59] = piece_type.Queen | piece_color.White
-	board[60] = piece_type.King | piece_color.White
-	board[61] = piece_type.Bishop | piece_color.White
-	board[62] = piece_type.Knight | piece_color.White
-	board[63] = piece_type.Rook | piece_color.White
-	for i in range (48,56):
+	board[91] = piece_type.Rook | piece_color.White
+	board[92] = piece_type.Knight | piece_color.White
+	board[93] = piece_type.Bishop | piece_color.White
+	board[94] = piece_type.Queen | piece_color.White
+	board[95] = piece_type.King | piece_color.White
+	board[96] = piece_type.Bishop | piece_color.White
+	board[97] = piece_type.Knight | piece_color.White
+	board[98] = piece_type.Rook | piece_color.White
+	for i in range (81,89):
 		board[i] = piece_type.Pawn | piece_color.White
