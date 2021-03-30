@@ -13,6 +13,8 @@ func draw_pieces(board_array):
 		var piece_tile = get_piece(board_array[i])
 		if(piece_tile != null):
 			self.set_cell(current_file, current_rank, piece_tile)
+		else:
+			self.set_cell(current_file, current_rank, -1)
 		
 		
 	
