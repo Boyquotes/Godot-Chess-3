@@ -18,6 +18,7 @@ enum piece_color {White = 8, Black = 16}
 var moving = false #is a piece currently being "held"?
 var selected_square #currently highilighted square
 var moving_piece #type of piece currently being moved
+var legal_moves #list of legal destinations for the currently moving piece
 
 var current_turn #0 = white, 1 = black
 
@@ -76,11 +77,11 @@ func place_piece(piece, index):
 				board_tilemap.set_cellv(selected_square, board_tilemap.DARK_TILE)
 		board[index] = piece
 		pieces_tilemap.draw_pieces(board)
-		#cycle the turns. no ternary operator in gdscript makes me sad
-		if current_turn == 0:
-			current_turn = 1
-		else:
-			current_turn = 0
+		if (!(coords_to_index(selected_square) == index)): #if the player didnt put the piece back where it started
+			if current_turn == 0:#cycle the turns. no ternary operator in gdscript makes me sad
+				current_turn = 1
+			else:
+				current_turn = 0
 
 #find the color of the piece in board[] at a given index
 func get_piece_color(index):
