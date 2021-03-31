@@ -97,11 +97,11 @@ func generate_pawn_moves(board, index):
 	final_moves.append(index)
 	if color == 0: #white pawn
 		next_pos = index - 10
-		if board[next_pos] != -1 and color != get_piece_color(board, next_pos):
+		if board[next_pos] == null: #if the square in front is empty
 			final_moves.append(next_pos)
 		if (floor(index / 10) == 8):
 			next_pos -= 10
-			if board[next_pos] != -1 and color != get_piece_color(board, next_pos):
+			if board[next_pos] == null:
 				final_moves.append(next_pos)
 		for dir in wp_capture_offsets:
 			next_pos = index + wp_capture_offsets[dir]
@@ -110,11 +110,11 @@ func generate_pawn_moves(board, index):
 		
 	if color == 1: #black pawn
 		next_pos = index + 10
-		if board[next_pos] != -1 and color != get_piece_color(board, next_pos):
+		if board[next_pos] == null: #if the square in front is empty
 			final_moves.append(next_pos)
 		if (floor(index / 10) == 3):
 			next_pos += 10
-			if board[next_pos] != -1 and color != get_piece_color(board, next_pos):
+			if board[next_pos] == null:
 				final_moves.append(next_pos)
 		for dir in bp_capture_offsets:
 			next_pos = index + bp_capture_offsets[dir]
