@@ -10,6 +10,24 @@ enum n_jump_offsets {a = -21, b = -19, c = -8, d = 12, e = 21, f = 19, g = 8, h 
 enum wp_capture_offsets{a = -9, b = -11}
 enum bp_capture_offsets{a = 9, b = 11}
 
+
+#logic for castling is proving somewhat tricky to implement
+#my current idea is to have bools for whether the relevant pieces have moved
+#as well as "temp" bools that will be set false for things like the king being in check
+#or the tiles between the king and rook being occupied
+var w_ks_rook_moved
+var w_qs_rook_moved
+var w_king_moved
+var w_can_castle_ks_temp
+var w_can_castle_qs_temp
+
+var b_ks_rook_moved
+var b_qs_rook_moved
+var b_king_moved
+var b_can_castle_ks_temp
+var b_can_castle_qs_temp
+
+
 func generate_queen_moves(board, index):
 	#print ("Generating queen moves!")
 	var final_moves = Array()
@@ -132,3 +150,30 @@ func get_piece_color(board, index):
 		return 0
 	else: #black
 		return 1
+
+#helper function called at start to reset all castling bools
+func reset_castling():
+	w_ks_rook_moved = false
+	w_qs_rook_moved = false
+	w_king_moved = false
+	w_can_castle_ks_temp = true
+	w_can_castle_qs_temp = true
+	b_ks_rook_moved = false
+	b_qs_rook_moved = false
+	b_king_moved = false
+	b_can_castle_ks_temp = true
+	b_can_castle_qs_temp = true
+	
+func get_can_castle_kingside(color):
+	match color:
+		0:
+			return !w_ks_rook_moved and !w_king_moved and w_can_castle_ks_temp
+		1:
+			return !b_ks_rook_moved and !b_king_moved and b_can_castle_ks_temp
+			
+func get_can_castle_queenside(color):
+	match color:
+		0:
+			return !w_qs_rook_moved and !w_king_moved and w_can_castle_qs_temp
+		1:
+			return !b_qs_rook_moved and !b_king_moved and b_can_castle_qs_temp

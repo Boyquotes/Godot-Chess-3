@@ -38,6 +38,7 @@ func _ready():
 	setup_pieces()
 	pieces_tilemap.draw_pieces(board)
 	current_turn = 0
+	
 
 func _input(event):
 	if event.is_action_released("mouse_left"):
@@ -54,7 +55,6 @@ func _input(event):
 func select_piece(square, piece, index):
 	selected_square = square #important later for removing the highlight effect
 	moving = true
-	#if piece == 21 || piece == 13 || piece == 20 || piece == 12 || piece == 19 || piece == 11 || piece == 18 || piece == 10 || piece == 14 || piece == 22:
 	legal_moves = generate_legal_moves(piece, index)
 	highlight_legal_moves()
 	moving_piece = board[index] #also important later, for putting the piece back down
